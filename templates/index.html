@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skincare AI Advisor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #4ecdc4;
+            --background-color: rgba(247, 247, 247, 0.6);
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --success-color: #4ecdc4;
+            --error-color: #d270ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/The%20desired%20image%20should%20showcase%20a%20mockup%20set%20of%20-Photoroom.jpg-YGNlbwI0dGA8kTpcwO5MYArPJrB9xM.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            position: relative;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 80%);
+            transform: rotate(30deg);
+            transition: all 0.5s ease;
+        }
+
+        .container:hover::before {
+            transform: rotate(0deg);
+        }
+
+        header {
+            background-color: rgba(255, 107, 107, 0.8);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        form {
+            padding: 30px;
+            display: grid;
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+            transition: all 0.3s ease;
+            color: rgba(51, 51, 51, 0.8);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(224, 224, 224, 0.5);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        input:focus + label, textarea:focus + label {
+            color: var(--secondary-color);
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            background-color: #45b7aa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        @keyframes ripple-effect {
+            0% { transform: scale(0, 0); opacity: 1; }
+            20% { transform: scale(25, 25); opacity: 1; }
+            100% { opacity: 0; transform: scale(40, 40); }
+        }
+
+        button:focus:not(:active)::after {
+            animation: ripple-effect 1s ease-out;
+        }
+
+        #categories {
+            margin-top: 30px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #categories h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        #categories ul {
+            list-style-type: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        #categories li {
+            background-color: rgba(247, 247, 247, 0.8);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        #categories li:hover {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background-color: rgba(255, 255, 255, 0.9);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        @keyframes slideIn {
+            from {transform: translateY(-50px);}
+            to {transform: translateY(0);}
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .info-section {
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .info-section p {
+            margin-bottom: 10px;
+        }
+
+        .floating-bubbles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .bubble {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: var(--secondary-color);
+            transform-origin: 0 50%;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            form {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="container">
+        <div class="floating-bubbles">
+            <div class="bubble" style="left: 10%; top: 20%; width: 30px; height: 30px;"></div>
+            <div class="bubble" style="left: 35%; top: 45%; width: 40px; height: 40px;"></div>
+            <div class="bubble" style="right: 20%; top: 30%; width: 25px; height: 25px;"></div>
+            <div class="bubble" style="right: 10%; bottom: 20%; width: 35px; height: 35px;"></div>
+        </div>
+        <header>
+            <h1>Skincare AI Advisor</h1>
+            <p class="subtitle">Discover your perfect skincare routine</p>
+        </header>
+        <form id="prediction-form">
+            <div class="form-container">
+                <form id="cosmeticForm">
+                    <div class="form-group">
+                        <label for="skinType">Select your skin type</label>
+                        <select id="skinType" name="skinType" required>
+                            <option value="" disabled selected>Choose your skin type</option>
+                            <option value="dry">Dry</option>
+                            <option value="oily">Oily</option>
+                            <option value="combination">Combination</option>
+                            <option value="sensitive">Sensitive</option>
+                        </select>
+                    </div>
+            
+            <div class="form-group">
+                <label for="product">Product Name:</label>
+                <select id="product" name="product" required>
+                    <option value="">Select a product</option>
+                    <option value="Superfood Antioxidant Cleanser" data-url="https://www.sephora.com/product/kale-spinach-green-tea-age-prevention-cleanser-P411387?icid2=products%20grid:p411387">Superfood Antioxidant Cleanser</option>
+                    <option value="Cleansing & Exfoliating Wipes" data-url="https://www.sephora.com/product/cleansing-exfoliating-wipes-P409800?icid2=products%20grid:p409800">Cleansing & Exfoliating Wipes</option>
+                    <option value="Purity Made Simple Cleanser" data-url="https://www.sephora.com/product/purity-made-simple-P7109?icid2=products%20grid:p7109">Purity Made Simple Cleanser</option>
+                    <option value="Beste No. 9 Jelly Cleanser" data-url="https://www.sephora.com/product/beste-no-9-jelly-cleanser-P447823?icid2=products%20grid:p447823">Beste No. 9 Jelly Cleanser</option>
+                    <option value="The Rice Polish Foaming Enzyme Powder" data-url="https://www.sephora.com/product/the-rice-polish-foaming-enzyme-powder-P427202?icid2=products%20grid:p427202">The Rice Polish Foaming Enzyme Powder</option>
+                    <option value="Rose Deep Hydration Facial Toner" data-url="https://www.sephora.com/product/rose-deep-hydration-facial-toner-P447828?icid2=products%20grid:p447828">Rose Deep Hydration Facial Toner</option>
+                    <option value="Take The Day Off Cleansing Balm" data-url="https://www.sephora.com/product/take-the-day-off-cleansing-balm-P409799?icid2=products%20grid:p409799">Take The Day Off Cleansing Balm</option>
+                    <option value="Bi-Facil Double-Action Eye Makeup Remover" data-url="https://www.sephora.com/product/bi-facil-double-action-eye-makeup-remover-P297700?icid2=products%20grid:p297700">Bi-Facil Double-Action Eye Makeup Remover</option>
+                    <option value="Balancing Force Oil Control Toner" data-url="https://www.sephora.com/product/balancing-force-oil-control-toner-P447830?icid2=products%20grid:p447830">Balancing Force Oil Control Toner</option>
+                    <option value="Beauty Elixir" data-url="https://www.sephora.com/product/beauty-elixir-P447832?icid2=products%20grid:p447832">Beauty Elixir</option>
+                    <option value="Waterproof Eye Makeup Remover" data-url="https://www.sephora.com/product/waterproof-eye-makeup-remover-P447834?icid2=products%20grid:p447834">Waterproof Eye Makeup Remover</option>
+                    <option value="Take The Day Off Makeup Remover For Lids, Lashes & Lips" data-url="https://www.sephora.com/product/take-the-day-off-makeup-remover-for-lids-lashes-lips-P409801?icid2=products%20grid:p409801">Take The Day Off Makeup Remover For Lids, Lashes & Lips</option>
+                    <option value="Facial Cotton" data-url="https://www.sephora.com/product/facial-cotton-P447836?icid2=products%20grid:p447836">Facial Cotton</option>
+                    <option value="ExfoliKate Cleanser Daily Foaming Wash" data-url="https://www.sephora.com/product/exfolikate-cleanser-daily-foaming-wash-P447838?icid2=products%20grid:p447838">ExfoliKate Cleanser Daily Foaming Wash</option>
+                    <option value="Checks and Balances Frothy Face Wash" data-url="https://www.sephora.com/product/checks-and-balances-frothy-face-wash-P447840?icid2=products%20grid:p447840">Checks and Balances Frothy Face Wash</option>
+                    <option value="Calendula Herbal Extract Alcohol Free Toner" data-url="https://www.sephora.com/product/calendula-herbal-extract-alcohol-free-toner-P396501?icid2=products%20grid:p396501">Calendula Herbal Extract Alcohol Free Toner</option>
+                    <option value="The Clean Truth Foaming Cleanser" data-url="https://www.sephora.com/product/the-clean-truth-foaming-cleanser-P447842?icid2=products%20grid:p447842">The Clean Truth Foaming Cleanser</option>
+                    <option value="Transforming Walnut Scrub" data-url="https://www.sephora.com/product/transforming-walnut-scrub-P447844?icid2=products%20grid:p447844">Transforming Walnut Scrub</option>
+                    <option value="Greek Yoghurt Foaming Cream Cleanser" data-url="https://www.sephora.com/product/greek-yoghurt-foaming-cream-cleanser-P447846?icid2=products%20grid:p447846">Greek Yoghurt Foaming Cream Cleanser</option>
+                    <option value="CoQ-10 Toner" data-url="https://www.sephora.com/product/coq-10-toner-P447848?icid2=products%20grid:p447848">CoQ-10 Toner</option>
+                    <option value="Brightening Cleanser" data-url="https://www.sephora.com/product/brightening-cleanser-P447850?icid2=products%20grid:p447850">Brightening Cleanser</option>
+                    <option value="The True Cream Aqua Bomb" data-url="https://www.sephora.com/product/the-true-cream-aqua-bomb-P447852?icid2=products%20grid:p447852">The True Cream Aqua Bomb</option>
+                    <option value="The Moisturizing Soft Cream" data-url="https://www.sephora.com/product/the-moisturizing-soft-cream-P447854?icid2=products%20grid:p447854">The Moisturizing Soft Cream</option>
+                    <option value="The True Cream Moisturizing Bomb" data-url="https://www.sephora.com/product/the-true-cream-moisturizing-bomb-P447856?icid2=products%20grid:p447856">The True Cream Moisturizing Bomb</option>
+                    <option value="COMPLEXION RESCUE Tinted Moisturizer Broad Spectrum SPF 30" data-url="https://www.sephora.com/product/complexion-rescue-tinted-moisturizer-broad-spectrum-spf-30-P447858?icid2=products%20grid:p447858">COMPLEXION RESCUE Tinted Moisturizer Broad Spectrum SPF 30</option>
+                    <option value="Lotus Youth Preserve Moisturizer" data-url="https://www.sephora.com/product/lotus-youth-preserve-moisturizer-P447860?icid2=products%20grid:p447860">Lotus Youth Preserve Moisturizer</option>
+                    <option value="Ultra Repair Cream Intense Hydration" data-url="https://www.sephora.com/product/ultra-repair-cream-intense-hydration-P447862?icid2=products%20grid:p447862">Ultra Repair Cream Intense Hydration</option>
+                    <option value="Moisture Surge 72-Hour Auto-Replenishing Hydrator" data-url="https://www.sephora.com/product/moisture-surge-72-hour-auto-replenishing-hydrator-P447864?icid2=products%20grid:p447864">Moisture Surge 72-Hour Auto-Replenishing Hydrator</option>
+                    <option value="Vitamin Enriched Face Base Priming Moisturizer" data-url="https://www.sephora.com/product/vitamin-enriched-face-base-priming-moisturizer-P447866?icid2=products%20grid:p447866">Vitamin Enriched Face Base Priming Moisturizer</option>
+                    <option value="Rose Deep Hydration Moisturizer" data-url="https://www.sephora.com/product/rose-deep-hydration-moisturizer-P447868?icid2=products%20grid:p447868">Rose Deep Hydration Moisturizer</option>
+                    <option value="Amazonian Clay BB Tinted Moisturizer Broad Spectrum SPF 20 Sunscreen" data-url="https://www.sephora.com/product/amazonian-clay-bb-tinted-moisturizer-broad-spectrum-spf-20-sunscreen-P447870?icid2=products%20grid:p447870">Amazonian Clay BB Tinted Moisturizer Broad Spectrum SPF 20 Sunscreen</option>
+                    <option value="Ceramidin Cream" data-url="https://www.sephora.com/product/ceramidin-cream-P447872?icid2=products%20grid:p447872">Ceramidin Cream</option>
+                    <option value="Dramatically Different Moisturizing Lotion+" data-url="https://www.sephora.com/product/dramatically-different-moisturizing-lotion-plus-P297702?icid2=products%20grid:p297702">Dramatically Different Moisturizing Lotion+</option>
+                    <option value="Squalane + Omega Repair Cream" data-url="https://www.sephora.com/product/squalane-omega-repair-cream-P447876?icid2=products%20grid:p447876">Squalane + Omega Repair Cream</option>
+                    <option value="Midnight Recovery Concentrate" data-url="https://www.sephora.com/product/midnight-recovery-concentrate-P447878?icid2=products%20grid:p447878">Midnight Recovery Concentrate</option>
+                    <option value="BB Tinted Treatment 12-Hour Primer Broad Spectrum SPF 30 Sunscreen" data-url="https://www.sephora.com/product/bb-tinted-treatment-12-hour-primer-broad-spectrum-spf-30-sunscreen-P447880?icid2=products%20grid:p447880">BB Tinted Treatment 12-Hour Primer Broad Spectrum SPF 30 Sunscreen</option>
+                    <option value="Premium Beauty Balm SPF 45" data-url="https://www.sephora.com/product/premium-beauty-balm-spf-45-P447882?icid2=products%20grid:p447882">Premium Beauty Balm SPF 45</option>
+                    <option value="Water Drench Hyaluronic Cloud Cream" data-url="https://www.sephora.com/product/water-drench-hyaluronic-cloud-cream-P447884?icid2=products%20grid:p447884">Water Drench Hyaluronic Cloud Cream</option>
+                    <option value="The Essence Plumping Skin Softener" data-url="https://www.sephora.com/product/the-essence-plumping-skin-softener-P447886?icid2=products%20grid:p447886">The Essence Plumping Skin Softener</option>
+                    <option value="Dramatically Different Moisturizing Gel" data-url="https://www.sephora.com/product/dramatically-different-moisturizing-gel-P297704?icid2=products%20grid:p297704">Dramatically Different Moisturizing Gel</option>
+                    <option value="Goodnight Glow Retin-ALT Sleeping Creme" data-url="https://www.sephora.com/product/goodnight-glow-retin-alt-sleeping-creme-P447890?icid2=products%20grid:p447890">Goodnight Glow Retin-ALT Sleeping Creme</option>
+                    <option value="100 percent Pure Argan Oil" data-url="https://www.sephora.com/product/100-percent-pure-argan-oil-P447892?icid2=products%20grid:p447892">100 percent Pure Argan Oil</option>
+                    <option value="Cold Plasma Sub-D Firming Neck Treatment" data-url="https://www.sephora.com/product/cold-plasma-sub-d-firming-neck-treatment-P447894?icid2=products%20grid:p447894">Cold Plasma Sub-D Firming Neck Treatment</option>
+                    <option value="Luminous Dewy Skin Mist" data-url="https://www.sephora.com/product/luminous-dewy-skin-mist-P447896?icid2=products%20grid:p447896">Luminous Dewy Skin Mist</option>
+                    <option value="Sheer Transformation Perfecting Moisturizer" data-url="https://www.sephora.com/product/sheer-transformation-perfecting-moisturizer-P447898?icid2=products%20grid:p447898">Sheer Transformation Perfecting Moisturizer</option>
+                    <option value="Squalane + Vitamin C Rose Oil" data-url="https://www.sephora.com/product/squalane-vitamin-c-rose-oil-P447900?icid2=products%20grid:p447900">Squalane + Vitamin C Rose Oil</option>
+                    <option value="GLOWSTARTER Mega Illuminating Moisturizer" data-url="https://www.sephora.com/product/glowstarter-mega-illuminating-moisturizer-P447902?icid2=products%20grid:p447902">GLOWSTARTER Mega Illuminating Moisturizer</option>
+                    <option value="Color Control Cushion Compact Broad Spectrum SPF 50+" data-url="https://www.sephora.com/product/color-control-cushion-compact-broad-spectrum-spf-50-P447904?icid2=products%20grid:p447904">Color Control Cushion Compact Broad Spectrum SPF 50+</option>
+                    <option value="Superberry Hydrate + Glow Oil" data-url="https://www.sephora.com/product/superberry-hydrate-glow-oil-P447906?icid2=products%20grid:p447906">Superberry Hydrate + Glow Oil</option>
+                    <option value="Water Bank Moisture Cream" data-url="https://www.sephora.com/product/water-bank-moisture-cream-P447908?icid2=products%20grid:p447908">Water Bank Moisture Cream</option>
+                    <option value="Evercalm Overnight Recovery Balm" data-url="https://www.sephora.com/product/evercalm-overnight-recovery-balm-P447910?icid2=products%20grid:p447910">Evercalm Overnight Recovery Balm</option>
+                    <option value="Black Tea Corset Cream Firming Moisturizer" data-url="https://www.sephora.com/product/black-tea-corset-cream-firming-moisturizer-P447912?icid2=products%20grid:p447912">Black Tea Corset Cream Firming Moisturizer</option>
+                    <option value="Invigorating Night Transformation Gel" data-url="https://www.sephora.com/product/invigorating-night-transformation-gel-P447914?icid2=products%20grid:p447914">Invigorating Night Transformation Gel</option>
+                    <option value="Hydro-Dynamic Ultimate Moisture" data-url="https://www.sephora.com/product/hydro-dynamic-ultimate-moisture-P447916?icid2=products%20grid:p447916">Hydro-Dynamic Ultimate Moisture</option>
+                    <option value="Pink Cloud Rosewater Moisture Creme" data-url="https://www.sephora.com/product/pink-cloud-rosewater-moisture-creme-P447918?icid2=products%20grid:p447918">Pink Cloud Rosewater Moisture Creme</option>
+                    <option value="Charlotte's Magic Cream Mini" data-url="https://www.sephora.com/product/charlottes-magic-cream-mini-P447920?icid2=products%20grid:p447920">Charlotte's Magic Cream Mini</option>
+                    <option value="The Moisturizing Cool Gel Cream" data-url="https://www.sephora.com/product/the-moisturizing-cool-gel-cream-P447922?icid2=products%20grid:p447922">The Moisturizing Cool Gel Cream</option>
+                    <option value="Ultimate Miracle Worker Multi-Rejuvenating Cream SPF 30" data-url="https://www.sephora.com/product/ultimate-miracle-worker-multi-rejuvenating-cream-spf-30-P447924?icid2=products%20grid:p447924">Ultimate Miracle Worker Multi-Rejuvenating Cream SPF 30</option>
+                    <option value="Vitamin C Glow Moisturizer" data-url="https://www.sephora.com/product/vitamin-c-glow-moisturizer-P447926?icid2=products%20grid:p447926">Vitamin C Glow Moisturizer</option>
+                    <option value="Photo Finish Primer Water" data-url="https://www.sephora.com/product/photo-finish-primer-water-P447928?icid2=products%20grid:p447928">Photo Finish Primer Water</option>
+                    <option value="Nutrient-Charged Water Gel" data-url="https://www.sephora.com/product/nutrient-charged-water-gel-P447930?icid2=products%20grid:p447930">Nutrient-Charged Water Gel</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="Brand Name">Brand</label>
+                <select id="Brand Name" name="Brand Name" required>
+                    <option value="" disabled selected>Select a Brand</option>
+                    <option value="YOUTH TO THE PEOPLE">YOUTH TO THE PEOPLE</option>
+                    <option value="SEPHORA COLLECTION">SEPHORA COLLECTION</option>
+                    <option value="PHILOSOPHY">PHILOSOPHY</option>
+                    <option value="DRUNK ELEPHANT">DRUNK ELEPHANT</option>
+                    <option value="TATCHA">TATCHA</option>
+                    <option value="FRESH">FRESH</option>
+                    <option value="CLINIQUE">CLINIQUE</option>
+                    <option value="LANCOME">LANCOME</option>
+                    <option value="OLEHENRIKSEN">OLEHENRIKSEN</option>
+                    <option value="SHISEIDO">SHISEIDO</option>
+                    <option value="KATE SOMERVILLE">KATE SOMERVILLE</option>
+                    <option value="ORIGINS">ORIGINS</option>
+                    <option value="KIEHL'S SINCE 1851">KIEHL'S SINCE 1851</option>
+                    <option value="KORRES">KORRES</option>
+                    <option value="INDIE LEE">INDIE LEE</option>
+                    <option value="BELIF">BELIF</option>
+                    <option value="LA MER">LA MER</option>
+                    <option value="BAREMINERALS">BAREMINERALS</option>
+                    <option value="FIRST AID BEAUTY">FIRST AID BEAUTY</option>
+                    <option value="BOBBI BROWN">BOBBI BROWN</option>
+                    <option value="TARTE">TARTE</option>
+                    <option value="DR. JART+">DR. JART+</option>
+                    <option value="BIOSSANCE">BIOSSANCE</option>
+                    <option value="PETER THOMAS ROTH">PETER THOMAS ROTH</option>
+                    <option value="JOSIE MARAN">JOSIE MARAN</option>
+                    <option value="PERRICONE MD">PERRICONE MD</option>
+                    <option value="GLAMGLOW">GLAMGLOW</option>
+                    <option value="AMOREPACIFIC">AMOREPACIFIC</option>
+                    <option value="LANEIGE">LANEIGE</option>
+                    <option value="REN CLEAN SKINCARE">REN CLEAN SKINCARE</option>
+                    <option value="MURAD">MURAD</option>
+                    <option value="HERBIVORE">HERBIVORE</option>
+                    <option value="CHARLOTTE TILBURY">CHARLOTTE TILBURY</option>
+                    <option value="SMASHBOX">SMASHBOX</option>
+                    <option value="ESTEE LAUDER">ESTEE LAUDER</option>
+                    <option value="MILK MAKEUP">MILK MAKEUP</option>
+                    <option value="DR. DENNIS GROSS SKINCARE">DR. DENNIS GROSS SKINCARE</option>
+                    <option value="KOPARI">KOPARI</option>
+                    <option value="SATURDAY SKIN">SATURDAY SKIN</option>
+                    <option value="ALGENIST">ALGENIST</option>
+                    <option value="BOSCIA">BOSCIA</option>
+                    <option value="SK-II">SK-II</option>
+                    <option value="GLOW RECIPE">GLOW RECIPE</option>
+                    <option value="MAKE UP FOR EVER">MAKE UP FOR EVER</option>
+                    <option value="EVE LOM">EVE LOM</option>
+                    <option value="FARMACY">FARMACY</option>
+                    <option value="JACK BLACK">JACK BLACK</option>
+                    <option value="SUNDAY RILEY">SUNDAY RILEY</option>
+                    <option value="KOH GEN DO">KOH GEN DO</option>
+                    <option value="CLARINS">CLARINS</option>
+                    <option value="LANCER">LANCER</option>
+                    <option value="NUFACE">NUFACE</option>
+                    <option value="VOLITION BEAUTY">VOLITION BEAUTY</option>
+                    <option value="DIOR">DIOR</option>
+                    <option value="PEACE OUT">PEACE OUT</option>
+                    <option value="FARSALI">FARSALI</option>
+                    <option value="BECCA">BECCA</option>
+                    <option value="IT COSMETICS">IT COSMETICS</option>
+                    <option value="GUERLAIN">GUERLAIN</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="ingredients">Ingredients:</label>
+                <textarea id="ingredients" name="ingredients" rows="4" placeholder="List main ingredients" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="review">Review Text:</label>
+                <textarea id="review" name="review" rows="6" placeholder="Write your review here" required></textarea>
+            </div>
+            
+            <button type="submit">Analyze My Skincare</button>
+        </form>
+        <div id="categories">
+            <h3>Explore Product Categories:</h3>
+            <ul>
+                {% for category in categories %}
+                <li>{{ category }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="info-section">
+            <h2>Why Use Our Skincare AI Advisor?</h2>
+            <p>Unlock the power of AI for your skincare routine:</p>
+            <ul>
+                <li>Get personalized product recommendations</li>
+                <li>Understand ingredient effectiveness for your skin type</li>
+                <li>Discover hidden gems in the skincare world</li>
+                <li>Optimize your routine based on data-driven insights</li>
+            </ul>
+            <p>Our cutting-edge AI analyzes thousands of reviews and scientific data to provide you with the most accurate and personalized skincare advice.</p>
+        </div>
+    </div>
+
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Your Personalized Skincare Insight</h2>
+            <p>Based on our AI analysis, here's what we found:</p>
+            <h3 id="prediction" style="color: var(--success-color); text-align: center; font-size: 24px; margin-top: 20px;"></h3>
+            <div id="suggestion" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            var formData = {
+                skin_type: document.getElementById('skin_type').value,
+                product: document.getElementById('product').value,
+                brand: document.getElementById('brand').value,
+                ingredients: document.getElementById('ingredients').value,
+                review: document.getElementById('review').value
+            };
+
+            // Show progress bar
+            document.getElementById('progressBar').style.transform = 'scaleX(0.5)';
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Complete progress bar
+                document.getElementById('progressBar').style.transform = 'scaleX(1)';
+
+                if (data.success) {
+                    document.getElementById('prediction').textContent = data.prediction;
+                    document.getElementById('suggestion').innerHTML = getSuggestion(data.prediction, formData.skin_type);
+                    document.getElementById('resultModal').style.display = "block";
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred while processing your request.');
+            })
+            .finally(() => {
+                // Hide progress bar after a short delay
+                setTimeout(() => {
+                    document.getElementById('progressBar').style.transform = 'scaleX(0)';
+                }, 500);
+            });
+        });
+
+        // Close modal when clicking on <span> (x)
+        document.getElementsByClassName("close")[0].onclick = function() {
+            document.getElementById('resultModal').style.display = "none";
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('resultModal')) {
+                document.getElementById('resultModal').style.display = "none";
+            }
+        }
+
+        // Add animation to form inputs
+        const inputs = document.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('active');
+            });
+            input.addEventListener('blur', function() {
+                if (this.value === '') {
+                    this.parentElement.classList.remove('active');
+                }
+            });
+        });
+
+        function getSuggestion(category, skinType) {
+            // This is a simple example. In a real application, you'd have more complex logic or API calls here.
+            const suggestions = {
+                "Cleanser": `For ${skinType} skin, we recommend a gentle ${category.toLowerCase()} that won't strip your skin's natural oils. Look for ingredients like glycerin or ceramides to maintain your skin barrier.`,
+                "Moisturizer": `${skinType} skin benefits from a ${category.toLowerCase()} that balances hydration. Consider products with hyaluronic acid or niacinamide to improve skin texture and hydration.`,
+                "Sunscreen": `Protecting ${skinType} skin is crucial. Choose a broad-spectrum ${category.toLowerCase()} with at least SPF 30. Look for lightweight, non-comedogenic formulas to suit your skin type.`,
+                "Serum": `To address specific concerns of ${skinType} skin, a targeted ${category.toLowerCase()} can be beneficial. Consider ingredients like vitamin C for brightening or retinol for anti-aging.`,
+                "Exfoliant": `${skinType} skin can benefit from regular, gentle exfoliation. Look for a ${category.toLowerCase()} with AHAs or BHAs, but be careful not to over-exfoliate.`,
+            };
+
+            return suggestions[category] || `This ${category.toLowerCase()} is an important part of your skincare routine. For ${skinType} skin, always patch test new products and introduce them gradually into your regimen.`;
+        }
+
+        // Add hover effect to category items
+        const categoryItems = document.querySelectorAll('#categories li');
+        categoryItems.forEach(item => {
+            item.addEventListener('mouseover', function() {
+                this.style.transform = 'scale(1.1)';
+            });
+            item.addEventListener('mouseout', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Animate floating bubbles
+        const bubbles = document.querySelectorAll('.bubble');
+        bubbles.forEach((bubble, index) => {
+            bubble.style.animationDelay = `${index * 2}s`;
+        });
+    </script>
+</body>
+</html>
